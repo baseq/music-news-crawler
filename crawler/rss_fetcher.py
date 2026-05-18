@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 HEADERS = {
     "User-Agent": (
-        "MusicDigestBot/1.0 (+https://github.com/your-org/music-news-crawler)"
+        "MusicDigestBot/1.0 (+https://github.com/baseq/music-news-crawler)"
     ),
     "Accept": "application/rss+xml, application/xml, text/xml, */*",
 }

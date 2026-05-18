@@ -30,7 +30,7 @@ def get_groq() -> Groq:
     stop=stop_after_attempt(3),
 )
 def _call_groq(title: str, text: str) -> dict:
-    prompt = ANALYZE_PROMPT.format(title=title, text=text[:3500])
+    prompt = ANALYZE_PROMPT.replace("{title}", title).replace("{text}", text[:3500])
     response = get_groq().chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[{"role": "user", "content": prompt}],

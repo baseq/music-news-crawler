@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS sources (
   last_crawled_at     TIMESTAMPTZ,
   crawl_error_count   INT NOT NULL DEFAULT 0,
   last_error          TEXT,
-  created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  CONSTRAINT sources_url_unique UNIQUE (url)
 );
 
 CREATE INDEX IF NOT EXISTS idx_sources_language  ON sources(language);
@@ -91,7 +92,8 @@ CREATE TABLE IF NOT EXISTS channels (
   content_filters  TEXT[],                     -- null = match all content types
   is_active        BOOLEAN NOT NULL DEFAULT TRUE,
   sort_order       INT NOT NULL DEFAULT 0,
-  created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  CONSTRAINT channels_slug_unique UNIQUE (slug)
 );
 
 

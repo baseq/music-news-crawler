@@ -55,7 +55,7 @@ COMMON_RSS_PATHS = [
 HEADERS = {
     "User-Agent": (
         "MusicDigestBot/1.0 (+https://github.com/your-org/music-news-crawler; "
-        "RSS aggregator — music news)"
+        "RSS aggregator - music news)"
     )
 }
 
@@ -174,7 +174,7 @@ def print_report(results: list[ValidationResult]):
 
     # Write report file
     report_path = f"crawl_report_{datetime.now().strftime('%Y%m%d_%H%M')}.txt"
-    with open(report_path, "w") as f:
+    with open(report_path, "w", encoding="utf-8") as f:
         for r in sorted(results, key=lambda x: (x.language, x.status)):
             f.write(f"{r.status}\t{r.language}\t{r.name}\t{r.working_rss or ''}\t{r.note}\n")
     print(f"\n  Full report saved → {report_path}")

@@ -99,9 +99,12 @@ def translate_article_summary(
     for lang in TARGET_LANGUAGES:
         summary_translated = translate_text(summary_en, target=lang, source="en")
         title_translated   = translate_text(title_en, target=lang, source="en")
-        results[lang] = {
-            "summary": summary_translated,
-            "title": title_translated,
-        }
-        logger.debug(f"  Translated to {lang}: {(summary_translated or '')[:60]}")
+        if summary_translated or title_translated:
+            results[lang] = {
+                "summary": summary_translated,
+                "title": title_translated,
+            }
+            logger.debug(f"  Translated to {lang}: {(summary_translated or '')[:60]}")
+        else:
+            logger.debug(f"  Translation skipped for {lang} (no result from any provider)")
     return results

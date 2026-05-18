@@ -3,19 +3,19 @@ feedparser==6.0.11
 httpx==0.27.0
 trafilatura==1.12.0
 beautifulsoup4==4.12.3
-lxml==5.2.2
+lxml
 
 # Database
-supabase==2.4.6
+supabase>=2.10.0          # 2.10+ supports new Supabase publishable/service key format
 
 # AI — summarization & classification
 groq==0.11.0
 
-# Translation fallback (offline)
-argostranslate==1.9.6
+# Translation fallback (offline) — install separately if needed:
+# pip install argostranslate
 
-# Extractive summarization fallback (when Groq is rate-limited)
-sumy==0.11.0
+# Extractive summarization fallback — install separately if needed:
+# pip install sumy
 
 # Newsletter
 resend==2.3.0

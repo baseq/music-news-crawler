@@ -78,15 +78,17 @@ def save_article(client, article: CleanArticle, ai_result: dict):
     result = client.table("articles").insert(row).execute()
     article_id = result.data[0]["id"]
 
-    # Save translations
+    # Save translations (only rows where we actually have translated text)
     translations = ai_result.get("translations", {})
     for lang, translated in translations.items():
-        if translated:
+        summary_t = (translated or {}).get("summary")
+        title_t   = (translated or {}).get("title")
+        if summary_t or title_t:
             client.table("article_translations").insert({
                 "article_id":         article_id,
                 "language":           lang,
-                "title_translated":   translated.get("title"),
-                "summary_translated": translated.get("summary"),
+                "title_translated":   title_t,
+                "summary_translated": summary_t,
             }).execute()
 
     return article_id

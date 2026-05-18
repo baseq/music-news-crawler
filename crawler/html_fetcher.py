@@ -20,7 +20,7 @@ from crawler.models import RawArticle
 logger = logging.getLogger(__name__)
 
 HEADERS = {
-    "User-Agent": "MusicDigestBot/1.0 (+https://github.com/your-org/music-news-crawler)",
+    "User-Agent": "MusicDigestBot/1.0 (+https://github.com/baseq/music-news-crawler)",
 }
 
 MAX_ARTICLES_PER_SOURCE = int(os.environ.get("MAX_ARTICLES_PER_SOURCE", "20"))
