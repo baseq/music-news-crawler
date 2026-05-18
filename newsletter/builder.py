@@ -47,7 +47,7 @@ class EmailPayload:
 def _format_date(dt: Optional[datetime]) -> str:
     if not dt:
         return ""
-    return dt.strftime("%-d %b %Y")   # e.g. "18 May 2026"
+    return f"{dt.day} {dt.strftime('%b %Y')}"   # e.g. "18 May 2026"
 
 
 def _get_channel_articles(
@@ -166,7 +166,7 @@ def _render_email(
         channel_icon=channel.get("icon", "🎵"),
         article_count=len(articles),
         issue_date=today.isoformat(),
-        issue_date_formatted=today.strftime("%-d %B %Y"),
+        issue_date_formatted=f"{today.day} {today.strftime('%B %Y')}",
         articles=article_contexts,
         preferred_language=lang,
         preferred_language_label=LANGUAGE_LABELS.get(lang, lang),
@@ -229,7 +229,7 @@ def build_emails(supabase: Client) -> list[EmailPayload]:
                 html = _render_email(channel, articles, sub, translations_cache)
                 subject = (
                     f"{channel.get('icon','')} {channel['name']} — "
-                    f"{today.strftime('%-d %b %Y')}"
+                    f"{today.day} {today.strftime('%b %Y')}"
                 )
                 all_payloads.append(EmailPayload(
                     to_email=sub["email"],
