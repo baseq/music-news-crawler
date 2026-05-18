@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useSearchParams, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
 function UnsubscribeContent() {
   const searchParams = useSearchParams();
