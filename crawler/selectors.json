@@ -1,0 +1,100 @@
+{
+  "_comment": "Per-source CSS selectors for HTML scraping (fallback when no RSS).",
+  "_format": {
+    "article_links": "CSS selector to find article links on the homepage",
+    "title": "CSS selector for the article title inside each article page",
+    "author": "CSS selector for the author name",
+    "image": "CSS selector for the hero/lead image"
+  },
+
+  "https://www.metalhead.ro": {
+    "article_links": ".td-module-thumb a, .entry-title a",
+    "title": "h1.entry-title",
+    "author": ".td-post-author-name a",
+    "image": ".td-post-featured-image img"
+  },
+  "https://theark.ro": {
+    "article_links": ".post-title a, article h2 a",
+    "title": "h1",
+    "author": ".author",
+    "image": ".wp-post-image"
+  },
+  "https://cinetic.ro": {
+    "article_links": "article a[href], h2 a, h3 a",
+    "title": "h1",
+    "author": ".author",
+    "image": "article img"
+  },
+  "https://untold.com/ro/news": {
+    "article_links": ".news-item a, article a",
+    "title": "h1",
+    "author": ".author",
+    "image": ".featured-image img"
+  },
+  "https://electriccastle.ro/blog": {
+    "article_links": ".blog-post a, article a",
+    "title": "h1",
+    "author": ".author",
+    "image": ".post-thumbnail img"
+  },
+  "https://www.improjazz.net": {
+    "article_links": "article a, .post a, h2 a",
+    "title": "h1, h2.post-title",
+    "author": ".author-name",
+    "image": ".post-image img"
+  },
+  "https://www.obskure.com": {
+    "article_links": "h2 a, .title a",
+    "title": "h1",
+    "author": ".author",
+    "image": "img.attachment-post-thumbnail"
+  },
+  "https://www.dbdmag.fr": {
+    "article_links": "article h2 a, .post-title a",
+    "title": "h1",
+    "author": ".author",
+    "image": ".post-thumbnail img, article img"
+  },
+  "https://www.blowupmagazine.it": {
+    "article_links": ".post-title a, h2 a, h3 a",
+    "title": "h1",
+    "author": ".author",
+    "image": ".featured img"
+  },
+  "https://www.diffus.de": {
+    "article_links": "article a, .article-title a",
+    "title": "h1",
+    "author": ".author",
+    "image": ".featured-image img"
+  },
+  "https://www.terrorverlag.de": {
+    "article_links": "article a, h2 a",
+    "title": "h1",
+    "author": ".author",
+    "image": "article img"
+  },
+  "https://www.subculture-magazin.de": {
+    "article_links": "article a, h2 a, h3 a",
+    "title": "h1",
+    "author": ".post-author",
+    "image": ".post-image img"
+  },
+  "https://www.neosphere.com": {
+    "article_links": "article a, .post a, h2 a",
+    "title": "h1",
+    "author": ".author",
+    "image": "article img"
+  },
+  "https://www.classicrockmag.it": {
+    "article_links": "article a, h2 a",
+    "title": "h1",
+    "author": ".author",
+    "image": ".featured img"
+  },
+  "https://www.mucchio.it/extra": {
+    "article_links": "article a, h2 a, h3 a",
+    "title": "h1",
+    "author": ".author-name",
+    "image": ".post-thumbnail img"
+  }
+}
