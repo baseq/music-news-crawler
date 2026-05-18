@@ -20,7 +20,7 @@ from supabase import Client
 
 logger = logging.getLogger(__name__)
 
-APP_BASE_URL = os.environ.get("APP_BASE_URL", "https://your-project.vercel.app")
+APP_BASE_URL = os.environ.get("APP_BASE_URL", "https://music-digest.org")
 MIN_ARTICLES_TO_SEND = 3   # skip digest if fewer than this many new articles
 
 LANGUAGE_LABELS = {
