@@ -7,8 +7,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY!   // service key — used only server-side
 );
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? "digest@musicdigest.app";
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? "digest@music-digest.org";
 const FROM_NAME  = process.env.RESEND_FROM_NAME  ?? "Music Digest";
 const APP_URL    = (process.env.APP_BASE_URL ?? "https://music-digest.org").replace(/\/$/, "");
 
@@ -138,6 +137,7 @@ export async function POST(req: NextRequest) {
 
   // Send welcome email only on first subscription
   if (isFirstSubscription && process.env.RESEND_API_KEY) {
+    const resend = new Resend(process.env.RESEND_API_KEY);
     try {
       // Fetch channel names
       const { data: channels } = await supabase
