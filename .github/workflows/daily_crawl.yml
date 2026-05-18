@@ -37,8 +37,6 @@ jobs:
           SUPABASE_URL:          ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY:  ${{ secrets.SUPABASE_SERVICE_KEY }}
           GROQ_API_KEY:          ${{ secrets.GROQ_API_KEY }}
-          LIBRETRANSLATE_URL:    ${{ secrets.LIBRETRANSLATE_URL }}
-          LIBRETRANSLATE_KEY:    ${{ secrets.LIBRETRANSLATE_KEY }}
           RESEND_API_KEY:        ${{ secrets.RESEND_API_KEY }}
           RESEND_FROM_EMAIL:     ${{ secrets.RESEND_FROM_EMAIL }}
           RESEND_FROM_NAME:      ${{ secrets.RESEND_FROM_NAME }}
