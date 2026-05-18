@@ -53,7 +53,8 @@ async function getArticles(channel: Channel, lang: string): Promise<Article[]> {
     .order("published_at", { ascending: false })
     .limit(20);
 
-  const articles: Article[] = (await q.execute()).data ?? [];
+  const { data } = await q;
+  const articles: Article[] = data ?? [];
 
   // Apply channel filters in JS (Supabase can't do array-overlap in free plan without RPC)
   let filtered = articles;
