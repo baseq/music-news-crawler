@@ -54,7 +54,7 @@ jobs:
           python crawler/main.py $ARGS
 
       - name: Send newsletters
-        if: ${{ github.event.inputs.dry_run != 'true' }}
+        if: ${{ github.event_name == 'schedule' || github.event.inputs.dry_run != 'true' }}
         env:
           SUPABASE_URL:          ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY:  ${{ secrets.SUPABASE_SERVICE_KEY }}

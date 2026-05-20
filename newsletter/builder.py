@@ -21,7 +21,7 @@ from supabase import Client
 logger = logging.getLogger(__name__)
 
 APP_BASE_URL = os.environ.get("APP_BASE_URL", "https://music-digest.org")
-MIN_ARTICLES_TO_SEND = 3   # skip digest if fewer than this many new articles
+MIN_ARTICLES_TO_SEND = 1   # skip digest only if no articles at all
 
 LANGUAGE_LABELS = {
     "en": "English", "ro": "Română", "fr": "Français",
@@ -53,7 +53,7 @@ def _format_date(dt: Optional[datetime]) -> str:
 def _get_channel_articles(
     supabase: Client,
     channel: dict,
-    since_hours: int = 24,
+    since_hours: int = 48,
 ) -> list[dict]:
     """Query articles matching a channel's genre/content filters."""
     cutoff = (datetime.now(timezone.utc) - timedelta(hours=since_hours)).isoformat()
@@ -148,10 +148,19 @@ def _render_email(
             except Exception:
                 pass
 
+        # sources can come back as a dict or a list depending on supabase-py version
+        src = a.get("sources")
+        if isinstance(src, list):
+            source_name = src[0].get("name", "") if src else ""
+        elif isinstance(src, dict):
+            source_name = src.get("name", "")
+        else:
+            source_name = ""
+
         article_contexts.append({
             "url":               a["url"],
             "title":             a["title"],
-            "source_name":       (a.get("sources") or {}).get("name", ""),
+            "source_name":       source_name,
             "genres":            a.get("genres") or [],
             "content_type":      (a.get("content_type") or "news").replace("-", " "),
             "summary":           summary,
