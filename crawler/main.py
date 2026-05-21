@@ -159,8 +159,8 @@ async def crawl_source(
                     stats["errors"] += 1
                 continue
 
-            # AI pipeline (summarize + classify + translate)
-            ai_result = await process_article(clean)
+            # AI pipeline — summarize in the source's original language
+            ai_result = await process_article(clean, source_language=source.get("language", "en"))
             if ai_counter:
                 ai_counter["count"] += 1
 

@@ -11,7 +11,7 @@ from typing import Optional
 from groq import Groq, RateLimitError
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
-from ai.prompts import ANALYZE_PROMPT, EXTRACTIVE_FALLBACK_SENTENCES
+from ai.prompts import ANALYZE_PROMPT, EXTRACTIVE_FALLBACK_SENTENCES, LANG_NAMES
 
 logger = logging.getLogger(__name__)
 
@@ -57,10 +57,15 @@ def _extract_json(raw: str) -> dict:
     raise json.JSONDecodeError("All parse strategies failed", raw, 0)
 
 
-def _call_groq(title: str, text: str) -> dict:
-    # Neutralise any double-quotes in the title so they don't bleed into Groq's JSON output
+def _call_groq(title: str, text: str, language: str = "en") -> dict:
     safe_title = title.replace('"', "'")
-    prompt = ANALYZE_PROMPT.replace("{title}", safe_title).replace("{text}", text[:3500])
+    lang_name  = LANG_NAMES.get(language, "English")
+    prompt = (
+        ANALYZE_PROMPT
+        .replace("{language_name}", lang_name)
+        .replace("{title}", safe_title)
+        .replace("{text}", text[:3500])
+    )
     response = get_groq().chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[{"role": "user", "content": prompt}],
@@ -82,7 +87,7 @@ def _extractive_fallback(text: str) -> str:
     return " ".join(s for s in sentences[:3] if s)
 
 
-def analyze_article(title: str, text: str) -> dict:
+def analyze_article(title: str, text: str, language: str = "en") -> dict:
     """
     Returns:
       {
@@ -104,7 +109,7 @@ def analyze_article(title: str, text: str) -> dict:
     }
 
     try:
-        data = _call_groq(title, text)
+        data = _call_groq(title, text, language)
         result["summary"]      = data.get("summary") or ""
         result["genres"]       = data.get("genres") or []
         result["content_type"] = data.get("content_type") or "news"

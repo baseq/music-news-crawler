@@ -61,35 +61,46 @@ def _get_channel_articles(
     q = (
         supabase.table("articles")
         .select(
-            "id, title, url, author, image_url, published_at, "
+            "id, source_id, title, url, author, image_url, published_at, "
             "summary_en, genres, content_type, sentiment, "
-            "sources(name)"
+            "sources(name, language)"
         )
         .eq("is_processed", True)
         .gte("crawled_at", cutoff)
         .order("published_at", desc=True)
-        .limit(20)
+        .limit(60)   # fetch more so we have enough after per-source grouping
     )
 
     articles = q.execute().data
 
-    # Filter by genre
+    # Apply channel filters to get the "ideal" set
+    filtered = articles
     genre_filters = channel.get("genre_filters")
     if genre_filters:
-        articles = [
-            a for a in articles
+        filtered = [
+            a for a in filtered
             if any(g in (a.get("genres") or []) for g in genre_filters)
         ]
-
-    # Filter by content type
     content_filters = channel.get("content_filters")
     if content_filters:
-        articles = [
-            a for a in articles
+        filtered = [
+            a for a in filtered
             if (a.get("content_type") or "") in content_filters
         ]
 
-    return articles[:15]   # cap at 15 per digest
+    # Guarantee at least one article per source that has new content.
+    # Add the most recent article from any source not already represented.
+    included_sources = {a.get("source_id") for a in filtered}
+    for article in articles:
+        sid = article.get("source_id")
+        if sid and sid not in included_sources:
+            filtered.append(article)
+            included_sources.add(sid)
+
+    # Re-sort by published_at desc after merge
+    filtered.sort(key=lambda a: a.get("published_at") or "", reverse=True)
+
+    return filtered[:20]   # cap at 20 per digest
 
 
 def _get_translation(supabase: Client, article_id: str, language: str) -> Optional[str]:
@@ -135,9 +146,20 @@ def _render_email(
     article_contexts = []
     for a in articles:
         art_id = a["id"]
-        # Use translated summary if available, fallback to EN
-        if lang != "en" and art_id in translations_cache and lang in translations_cache[art_id]:
-            summary = translations_cache[art_id][lang]
+
+        # Determine the article's original language from its source
+        src = a.get("sources")
+        if isinstance(src, list):
+            src = src[0] if src else {}
+        src = src or {}
+        article_lang = src.get("language", "en")
+
+        # Priority: original-language translation → subscriber preferred language → English
+        art_translations = translations_cache.get(art_id, {})
+        if article_lang != "en" and article_lang in art_translations:
+            summary = art_translations[article_lang]
+        elif lang != "en" and lang in art_translations:
+            summary = art_translations[lang]
         else:
             summary = a.get("summary_en") or ""
 
@@ -148,14 +170,7 @@ def _render_email(
             except Exception:
                 pass
 
-        # sources can come back as a dict or a list depending on supabase-py version
-        src = a.get("sources")
-        if isinstance(src, list):
-            source_name = src[0].get("name", "") if src else ""
-        elif isinstance(src, dict):
-            source_name = src.get("name", "")
-        else:
-            source_name = ""
+        source_name = src.get("name", "")
 
         article_contexts.append({
             "url":               a["url"],

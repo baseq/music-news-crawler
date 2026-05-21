@@ -13,20 +13,29 @@ CONTENT_TYPES = [
 
 SENTIMENTS = ["positive", "neutral", "negative"]
 
+LANG_NAMES = {
+    "en": "English",
+    "ro": "Romanian",
+    "fr": "French",
+    "de": "German",
+    "it": "Italian",
+    "es": "Spanish",
+}
+
 
 ANALYZE_PROMPT = """\
 You are a concise music journalism analyst. Analyze the article below and return a JSON object.
 
 Rules:
-- "summary": exactly 3 sentences in English. Present tense. Factual and neutral. Do not start with "This article".
+- "summary": exactly 3 sentences in {language_name}. Present tense. Factual and neutral. Do not start with "This article".
 - "genres": 1-3 tags from this exact list: {genres}. Choose only what clearly applies.
 - "content_type": exactly one from: {content_types}
 - "sentiment": one of: {sentiments}
 
-Article title: {title}
+Article title: {{title}}
 
 Article text (may be truncated):
-{text}
+{{text}}
 
 Return ONLY valid JSON. No explanation. No markdown. Example:
 {{"summary":"...", "genres":["metal","underground"], "content_type":"album-review", "sentiment":"positive"}}
@@ -34,8 +43,7 @@ Return ONLY valid JSON. No explanation. No markdown. Example:
     genres=", ".join(GENRES),
     content_types=", ".join(CONTENT_TYPES),
     sentiments=", ".join(SENTIMENTS),
-    title="{title}",
-    text="{text}",
+    language_name="{language_name}",   # filled at call time
 )
 
 
