@@ -29,8 +29,38 @@ def get_groq() -> Groq:
     wait=wait_exponential(multiplier=2, min=4, max=60),
     stop=stop_after_attempt(3),
 )
+def _extract_json(raw: str) -> dict:
+    """Try increasingly lenient strategies to get a dict out of a Groq response."""
+    # 1. Direct parse
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        pass
+
+    # 2. Extract first {...} block (handles leading/trailing text)
+    m = re.search(r"\{.*\}", raw, re.DOTALL)
+    if m:
+        try:
+            return json.loads(m.group(0))
+        except json.JSONDecodeError:
+            pass
+
+    # 3. Replace any unescaped double quotes inside string values (heuristic)
+    cleaned = re.sub(r'(?<=[:{,\[])\s*"(.*?)"(?=\s*[,}\]])',
+                     lambda mo: '"' + mo.group(1).replace('"', "'") + '"',
+                     raw, flags=re.DOTALL)
+    try:
+        return json.loads(cleaned)
+    except json.JSONDecodeError:
+        pass
+
+    raise json.JSONDecodeError("All parse strategies failed", raw, 0)
+
+
 def _call_groq(title: str, text: str) -> dict:
-    prompt = ANALYZE_PROMPT.replace("{title}", title).replace("{text}", text[:3500])
+    # Neutralise any double-quotes in the title so they don't bleed into Groq's JSON output
+    safe_title = title.replace('"', "'")
+    prompt = ANALYZE_PROMPT.replace("{title}", safe_title).replace("{text}", text[:3500])
     response = get_groq().chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[{"role": "user", "content": prompt}],
@@ -43,25 +73,13 @@ def _call_groq(title: str, text: str) -> dict:
     raw = re.sub(r"^```(?:json)?\s*", "", raw)
     raw = re.sub(r"\s*```$", "", raw)
 
-    return json.loads(raw)
+    return _extract_json(raw)
 
 
 def _extractive_fallback(text: str) -> str:
-    """Extractive summary using sumy (no API needed)."""
-    try:
-        from sumy.parsers.plaintext import PlaintextParser
-        from sumy.nlp.tokenizers import Tokenizer
-        from sumy.summarizers.lsa import LsaSummarizer
-
-        parser = PlaintextParser.from_string(text, Tokenizer("english"))
-        summarizer = LsaSummarizer()
-        sentences = summarizer(parser.document, EXTRACTIVE_FALLBACK_SENTENCES)
-        return " ".join(str(s) for s in sentences)
-    except Exception as e:
-        logger.warning(f"Extractive fallback failed: {e}")
-        # Last resort: first N sentences
-        sentences = re.split(r'(?<=[.!?])\s+', text)
-        return " ".join(sentences[:3])
+    """Extractive summary: first 3 sentences of the article text."""
+    sentences = re.split(r'(?<=[.!?])\s+', text.strip())
+    return " ".join(s for s in sentences[:3] if s)
 
 
 def analyze_article(title: str, text: str) -> dict:
