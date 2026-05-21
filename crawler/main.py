@@ -119,6 +119,7 @@ async def crawl_source(
     supabase_client,
     dedup: DedupCache,
     source: dict,
+    ai_counter: dict = None,
 ) -> dict:
     """Crawl one source. Returns stats dict."""
     stats = {"fetched": 0, "new": 0, "saved": 0, "errors": 0}
@@ -146,8 +147,22 @@ async def crawl_source(
                 logger.debug(f"  [{source_name}] Skipped (too short): {raw.title[:60]}")
                 continue
 
+            # Enforce --max-new cap: skip AI but still record the article as unprocessed
+            if ai_counter and ai_counter["limit"] and ai_counter["count"] >= ai_counter["limit"]:
+                logger.debug(f"  [{source_name}] AI cap reached — saving without processing: {raw.title[:60]}")
+                try:
+                    save_article(supabase_client, clean, {"summary": None, "genres": [], "content_type": None, "sentiment": None})
+                    dedup.mark_seen(clean.url)
+                    stats["saved"] += 1
+                except Exception as e:
+                    logger.error(f"  [{source_name}] DB save failed: {e}")
+                    stats["errors"] += 1
+                continue
+
             # AI pipeline (summarize + classify + translate)
             ai_result = await process_article(clean)
+            if ai_counter:
+                ai_counter["count"] += 1
 
             # Save to DB
             try:
@@ -168,11 +183,11 @@ async def crawl_source(
     return stats
 
 
-async def main(lang: str = None, source_id: str = None):
+async def main(lang: str = None, source_id: str = None, max_new: int = None):
     supabase = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SERVICE_KEY"])
 
     sources = get_active_sources(supabase, lang=lang, source_id=source_id)
-    logger.info(f"Starting crawl: {len(sources)} active sources | dry_run={DRY_RUN}")
+    logger.info(f"Starting crawl: {len(sources)} active sources | dry_run={DRY_RUN} | max_new={max_new or 'unlimited'}")
 
     dedup = DedupCache(supabase)
     preloaded = dedup.preload(since_hours=72)
@@ -180,13 +195,16 @@ async def main(lang: str = None, source_id: str = None):
 
     totals = {"fetched": 0, "new": 0, "saved": 0, "errors": 0}
 
+    # Shared counter to enforce --max-new cap across all sources
+    ai_counter = {"count": 0, "limit": max_new}
+
     # Process sources with concurrency limit (be polite to servers)
     sem = asyncio.Semaphore(5)
 
     async with httpx.AsyncClient() as http_client:
         async def _bounded_crawl(source):
             async with sem:
-                return await crawl_source(http_client, supabase, dedup, source)
+                return await crawl_source(http_client, supabase, dedup, source, ai_counter)
 
         tasks = [_bounded_crawl(s) for s in sources]
         results = []
@@ -215,9 +233,10 @@ if __name__ == "__main__":
     parser.add_argument("--lang",      help="Language filter (en/ro/fr/de/it/es)")
     parser.add_argument("--source-id", help="Crawl a single source by UUID")
     parser.add_argument("--dry-run",   action="store_true", help="No DB writes or emails")
+    parser.add_argument("--max-new",   type=int, default=None, help="Max articles to AI-process per run")
     args = parser.parse_args()
 
     if args.dry_run:
         os.environ["DRY_RUN"] = "true"
 
-    asyncio.run(main(lang=args.lang, source_id=args.source_id))
+    asyncio.run(main(lang=args.lang, source_id=args.source_id, max_new=args.max_new))
