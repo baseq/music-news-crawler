@@ -111,8 +111,8 @@ def analyze_article(title: str, text: str, language: str = "en") -> dict:
     try:
         data = _call_groq(title, text, language)
         result["summary"]      = data.get("summary") or ""
-        result["genres"]       = data.get("genres") or []
-        result["content_type"] = data.get("content_type") or "news"
+        result["genres"]       = data.get("topics") or data.get("genres") or []
+        result["content_type"] = data.get("content_type") or "report"
         result["sentiment"]    = data.get("sentiment") or "neutral"
     except RateLimitError:
         logger.warning(f"Groq rate limit hit for '{title[:50]}' — using extractive fallback")
