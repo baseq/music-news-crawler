@@ -2,17 +2,19 @@ import { supabase, Channel } from "@/lib/supabase";
 import Link from "next/link";
 
 const GENRE_COLORS: Record<string, string> = {
-  indie:        "bg-violet-900/40 text-violet-300",
-  metal:        "bg-red-900/40 text-red-300",
-  jazz:         "bg-amber-900/40 text-amber-300",
-  electronic:   "bg-cyan-900/40 text-cyan-300",
-  techno:       "bg-blue-900/40 text-blue-300",
-  underground:  "bg-green-900/40 text-green-300",
-  rock:         "bg-orange-900/40 text-orange-300",
-  folk:         "bg-yellow-900/40 text-yellow-300",
-  "hip-hop":    "bg-pink-900/40 text-pink-300",
-  experimental: "bg-purple-900/40 text-purple-300",
-  punk:         "bg-rose-900/40 text-rose-300",
+  geopolitics:  "bg-blue-900/40 text-blue-300",
+  defense:      "bg-red-900/40 text-red-300",
+  tech:         "bg-cyan-900/40 text-cyan-300",
+  ai:           "bg-violet-900/40 text-violet-300",
+  startups:     "bg-indigo-900/40 text-indigo-300",
+  economy:      "bg-green-900/40 text-green-300",
+  finance:      "bg-emerald-900/40 text-emerald-300",
+  energy:       "bg-amber-900/40 text-amber-300",
+  science:      "bg-purple-900/40 text-purple-300",
+  health:       "bg-pink-900/40 text-pink-300",
+  environment:  "bg-lime-900/40 text-lime-300",
+  society:      "bg-orange-900/40 text-orange-300",
+  romania:      "bg-yellow-900/40 text-yellow-300",
 };
 
 async function getFeaturedChannels(): Promise<Channel[]> {
@@ -33,14 +35,14 @@ export default async function HomePage() {
       {/* Hero */}
       <section className="py-20 text-center">
         <p className="text-subtle text-sm uppercase tracking-widest mb-4">
-          Daily music news
+          World news, daily
         </p>
         <h1 className="text-5xl md:text-6xl font-bold text-heading mb-6 leading-tight">
-          Your genre.<br />Your language.
+          Your news.<br />Your language.
         </h1>
         <p className="text-lg text-body max-w-xl mx-auto mb-10 leading-relaxed">
-          150 music news sources across 6 languages — indie, metal, jazz, electronic,
-          underground and more — summarised daily and delivered to your inbox.
+          37 news sources across 6 languages — geopolitics, tech, economy, Romania,
+          and more — summarised daily and delivered to your inbox.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
@@ -61,9 +63,9 @@ export default async function HomePage() {
       {/* Stats bar */}
       <section className="border border-border rounded-xl p-6 mb-16 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
         {[
-          ["150", "Sources"],
+          ["37", "Sources"],
           ["6", "Languages"],
-          ["14", "Channels"],
+          ["7", "Channels"],
           ["Daily", "Digest"],
         ].map(([val, label]) => (
           <div key={label}>
@@ -124,13 +126,13 @@ export default async function HomePage() {
           {[
             {
               n: "1",
-              title: "We crawl 150 sources daily",
-              body: "RSS feeds and HTML scrapers cover indie blogs, metal zines, jazz magazines, techno outlets — in 6 languages.",
+              title: "We crawl 37 sources daily",
+              body: "RSS feeds cover Reuters, BBC, Al Jazeera, TechCrunch, Digi24, HotNews and more — geopolitics, tech, economy, and Romanian news in 6 languages.",
             },
             {
               n: "2",
               title: "AI summarises & translates",
-              body: "Each article gets a 3-sentence summary, genre tags, and content type. Then it's translated into your chosen language.",
+              body: "Each article gets a 3-sentence summary, topic tags, and content type. Then it's translated into your chosen language.",
             },
             {
               n: "3",

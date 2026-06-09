@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Music Digest — Daily music news in your language",
+  title: "Daily Brief — World news in your language",
   description:
-    "Subscribe to daily music news digests across indie, metal, jazz, electronic, underground and more — translated into your language.",
+    "Subscribe to daily news digests covering geopolitics, tech, economy, Romania, and more — translated into your language.",
   openGraph: {
-    title: "Music Digest",
-    description: "Daily music news across 150 sources, 6 languages, 14 channels.",
+    title: "Daily Brief",
+    description: "World news across 37 sources, 6 languages, 7 channels.",
     type: "website",
   },
 };
@@ -19,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <nav className="border-b border-border sticky top-0 z-50 bg-bg/90 backdrop-blur">
           <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
             <a href="/" className="font-bold text-heading text-lg tracking-tight">
-              🎵 Music Digest
+              📰 Daily Brief
             </a>
             <div className="flex items-center gap-6 text-sm">
               <a href="/channels" className="text-subtle hover:text-heading transition-colors">
@@ -36,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </nav>
         <main className="max-w-5xl mx-auto px-4 py-10">{children}</main>
         <footer className="border-t border-border mt-16 py-8 text-center text-muted text-sm">
-          Music Digest &mdash; 150 sources &middot; 6 languages &middot; 14 channels &middot; $0/month
+          Daily Brief &mdash; 37 sources &middot; 6 languages &middot; 7 channels &middot; $0/month
         </footer>
       </body>
     </html>

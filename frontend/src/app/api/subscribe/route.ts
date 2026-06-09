@@ -8,7 +8,7 @@ const supabase = createClient(
 );
 
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? "digest@music-digest.org";
-const FROM_NAME  = process.env.RESEND_FROM_NAME  ?? "Music Digest";
+const FROM_NAME  = process.env.RESEND_FROM_NAME  ?? "Daily Brief";
 const APP_URL    = (process.env.APP_BASE_URL ?? "https://music-digest.org").replace(/\/$/, "");
 
 function isValidEmail(email: string) {
@@ -33,7 +33,7 @@ function buildWelcomeEmail(
 
   return `<!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Welcome to Music Digest</title></head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Welcome to Daily Brief</title></head>
 <body style="margin:0;padding:0;background:#0a0a0f;font-family:'Helvetica Neue',Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0f;">
     <tr><td align="center" style="padding:40px 16px;">
@@ -41,15 +41,15 @@ function buildWelcomeEmail(
 
         <!-- Header -->
         <tr><td style="padding:40px 40px 24px;border-bottom:1px solid #1e1e2e;">
-          <p style="margin:0;font-size:28px;font-weight:700;color:#e2e8f0;">🎵 Music Digest</p>
-          <p style="margin:8px 0 0;font-size:14px;color:#6b7280;">Your curated music news, delivered daily</p>
+          <p style="margin:0;font-size:28px;font-weight:700;color:#e2e8f0;">📰 Daily Brief</p>
+          <p style="margin:8px 0 0;font-size:14px;color:#6b7280;">Your curated news digest, delivered daily</p>
         </td></tr>
 
         <!-- Body -->
         <tr><td style="padding:32px 40px;">
           <h1 style="margin:0 0 16px;font-size:22px;font-weight:600;color:#e2e8f0;">Welcome aboard! 🎉</h1>
           <p style="margin:0 0 20px;font-size:15px;color:#94a3b8;line-height:1.6;">
-            You're now subscribed to daily music news digests. We'll send you a curated summary every morning at <strong style="color:#e2e8f0;">6 am UTC</strong>.
+            You're now subscribed to daily news digests. We'll send you a curated summary every morning at <strong style="color:#e2e8f0;">6 am UTC</strong>.
           </p>
 
           <p style="margin:0 0 10px;font-size:14px;font-weight:600;color:#a5b4fc;text-transform:uppercase;letter-spacing:0.05em;">Your channels</p>
@@ -156,7 +156,7 @@ export async function POST(req: NextRequest) {
       await resend.emails.send({
         from: `${FROM_NAME} <${FROM_EMAIL}>`,
         to: email,
-        subject: `Welcome to Music Digest 🎵`,
+        subject: `Welcome to Daily Brief 📰`,
         html,
         headers: {
           "List-Unsubscribe": `<${unsubscribeUrl}>`,

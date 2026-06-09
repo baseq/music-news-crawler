@@ -3,22 +3,24 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "All Channels — Music Digest",
-  description: "Browse all 14 music digest channels — indie, metal, jazz, electronic, underground and more.",
+  title: "All Channels — Daily Brief",
+  description: "Browse all 7 news channels — geopolitics, tech, economy, Romania, and more.",
 };
 
 const GENRE_COLORS: Record<string, string> = {
-  indie:        "bg-violet-900/40 text-violet-300",
-  metal:        "bg-red-900/40 text-red-300",
-  jazz:         "bg-amber-900/40 text-amber-300",
-  electronic:   "bg-cyan-900/40 text-cyan-300",
-  techno:       "bg-blue-900/40 text-blue-300",
-  underground:  "bg-green-900/40 text-green-300",
-  rock:         "bg-orange-900/40 text-orange-300",
-  folk:         "bg-yellow-900/40 text-yellow-300",
-  "hip-hop":    "bg-pink-900/40 text-pink-300",
-  experimental: "bg-purple-900/40 text-purple-300",
-  punk:         "bg-rose-900/40 text-rose-300",
+  geopolitics:  "bg-blue-900/40 text-blue-300",
+  defense:      "bg-red-900/40 text-red-300",
+  tech:         "bg-cyan-900/40 text-cyan-300",
+  ai:           "bg-violet-900/40 text-violet-300",
+  startups:     "bg-indigo-900/40 text-indigo-300",
+  economy:      "bg-green-900/40 text-green-300",
+  finance:      "bg-emerald-900/40 text-emerald-300",
+  energy:       "bg-amber-900/40 text-amber-300",
+  science:      "bg-purple-900/40 text-purple-300",
+  health:       "bg-pink-900/40 text-pink-300",
+  environment:  "bg-lime-900/40 text-lime-300",
+  society:      "bg-orange-900/40 text-orange-300",
+  romania:      "bg-yellow-900/40 text-yellow-300",
 };
 
 async function getChannels(): Promise<Channel[]> {
